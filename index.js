@@ -1,7 +1,13 @@
 // Dependencies
 const mysql = require("mysql");
 const inquirer = require("inquirer");
-const db = require("../db");
+const db = require("./db");
+
+db.connect(function (err) {
+  if (err) throw err;
+  console.log("connected as id " + db.threadId + "\n");
+  firstQ();
+});
 
 // The initial question, to discover which action the user wants to perform
 function firstQ() {
@@ -87,20 +93,20 @@ function addDept(){
       name: "addDeptAnswer",
     }
   ]).then(function(newDeptResults){
-    db.connection.query(
+    db.query(
       "INSERT INTO department SET ?",
       {
         name: newDeptResults.addDeptAnswer,
       },
       function(err, res) {
         if (err) throw err;
-      console.log(`SUCCESS!  You have added the department ${newDeptResults.addDeptAnswer}`.underline.brightGreen)
-      continueOption();
+      console.log(`SUCCESS!  You have added the department ${newDeptResults.addDeptAnswer}`)
+      firstQ();
   })}
 )};
 // Function to create a new role
 function addRole() {
-    db.connection.query("SELECT * FROM department", function(err, res) {
+    db.query("SELECT * FROM department", function(err, res) {
         if (err) throw err;
             inquirer.prompt([
             {
@@ -127,10 +133,10 @@ function addRole() {
             },
         ]).then(function(newRoleResults){
             if (newRoleResults.addRoleSalary != parseInt(newRoleResults.addRoleSalary)) {
-              console.log(`The salary must be numbers only, without letters or special characters.  Please try again.`.underline.red);
+              console.log(`The salary must be numbers only, without letters or special characters.  Please try again.`.red);
               addRole();
             } else {
-              db.connection.query("INSERT INTO role SET ?",
+              db.query("INSERT INTO role SET ?",
                 {
                 title: newRoleResults.addRoleTitle,
                 salary: newRoleResults.addRoleSalary,
@@ -138,15 +144,15 @@ function addRole() {
                 },
               function(err, res) {
                 if (err) throw err;
-                console.log(`Success!  You have added the role ${newRoleResults.addRoleTitle}`.underline.brightGreen)
-                continueOption();
+                console.log(`Success!  You have added the role ${newRoleResults.addRoleTitle}`)
+                firstQ();
               })}  
           })
     }
 )}
 //Function to begin adding a new employee
 function addEmployee(){
-  db.connection.query("SELECT * FROM role", function(err, res) {
+  db.query("SELECT * FROM role", function(err, res) {
     if (err) throw err;
       inquirer.prompt([
         {
@@ -172,33 +178,29 @@ function addEmployee(){
         }
         },
         { 
-          type: "confirm",
-          message: "And will this person be a people manager?",
-          name: "addEmployeeIsMgr",
-        },
-        { 
-          type: "confirm",
+          type: "list",
           message: "Great, will this employee report to a manager?",
           name: "addEmployeeHasMgr",
+          choices:[1,2,3,NULL]
         },
       ]).then(function(newEmployeeResults) {
-        let query = db.connection.query(
+        let query = db.query(
           "INSERT INTO employee SET ?",
           {
           first_name: newEmployeeResults.addEmployeeNameF,
           last_name: newEmployeeResults.addEmployeeNameL,
           role_id: parseInt(newEmployeeResults.addEmployeeRole.slice(0, 5)),
-          is_manager: newEmployeeResults.addEmployeeIsMgr,
+          manager_id: newEmployeeResults.addEmployeeIsMgr,
           },
           function(err, res) {
             if (err) throw err;
             console.log(res.affectedRows + " employee inserted!\n");
             if (newEmployeeResults.addEmployeeHasMgr === true) {
-              console.log(`Almost there with ${newEmployeeResults.addEmployeeNameF} ${newEmployeeResults.addEmployeeNameL}, just a couple of questions about their manager`.underline.brightGreen)
+              console.log(`Almost there with ${newEmployeeResults.addEmployeeNameF} ${newEmployeeResults.addEmployeeNameL}, just a couple of questions about their manager`)
               getMgr()
             } else {
-              console.log(`SUCCESS!  You have added` `${newEmployeeResults.addEmployeeNameF} ${newEmployeeResults.addEmployeeNameL}`.underline.brightGreen `to the team!`)
-              continueOption();
+              console.log(`SUCCESS!  You have added` `${newEmployeeResults.addEmployeeNameF} ${newEmployeeResults.addEmployeeNameL}` `to the team!`)
+              firstQ();
             }
           }
         )
@@ -207,7 +209,7 @@ function addEmployee(){
 };   
 // Function that produces the manager and employee ids, to assign the appropriate manager to an employee
 function getMgr(){
-  db.connection.query("SELECT * FROM employee WHERE is_manager=1", function(err, res) {
+  db.query("SELECT * FROM employee WHERE is_manager=1", function(err, res) {
     if (err) throw err;
     inquirer.prompt([
       {
@@ -224,7 +226,7 @@ function getMgr(){
       }
     ]).then(function(mgrQ) {
       const idArr = []
-      db.connection.query("SELECT id FROM employee", function(err, ans) {
+      db.query("SELECT id FROM employee", function(err, ans) {
         for (let i = 0; i < ans.length; i++) {
         idArr.push(ans[i].id)
         }
@@ -241,15 +243,16 @@ function getMgr(){
   })
 }
 // Function that physically adds the manager_id attribute into the employee entry, where appropraite
-function addMgr(manager, employee){
-
-
-
-
-
-}
+// function addMgr(manager, employee){
+// }
 // Function to view all departments
-
+function viewDept(){
+  db.query("SELECT * FROM department", function(err,res){
+    if (err) throw err;
+    console.table(res)
+    firstQ()
+  })
+}
 
 
 

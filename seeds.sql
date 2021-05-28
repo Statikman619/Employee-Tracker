@@ -1,4 +1,4 @@
-USE employee_DB;
+USE employee_tracker;
 
 -- departments
 INSERT INTO department (name)
@@ -7,7 +7,7 @@ VALUES ('Production'),
 ('Management');
 
 -- roles for each department
-INSERT INTO role (id, title, salary, department_id)
+INSERT INTO role (title, salary, department_id)
 VALUES ('Construction', 55000.00, 1),
 ('Production', 35000.00, 1),
 ('CNC Line', 25000.00, 2),
@@ -19,7 +19,7 @@ VALUES ('Construction', 55000.00, 1),
 ('Manager', 75000.00, 3);
 
 -- employees in each department and role
-INSERT INTO employee (id, first_name, last_name, role_id, manager_id)
+INSERT INTO employee (first_name, last_name, role_id, manager_id)
 VALUES ('Michael', 'Martinez', 7, NULL), -- dept 1 manager
 ('Jessica', 'Martinez', 8, NULL), -- dept 2 manager
 ('Ernesto', 'Martinez', 9, NULL), -- dept 3 manager
