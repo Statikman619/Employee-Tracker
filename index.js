@@ -252,7 +252,7 @@ function viewDept(){
     const deptArr = []
       for (var i = 0; i < res.length; i++) {
         deptArr.push(res[i])
-  })
+  });
     console.table(res);
     firstQ();
 }
@@ -271,21 +271,40 @@ function viewRole(){
   })
 }
 // Function to view all employees
-
-
-
-
-
-
-
+function viewEmployee() {
+    db.query("SELECT * FROM employee", function(err, res) {
+      if (err) throw err;
+      const empArr = []
+      for (var i = 0; i < res.length; i++) {
+        empArr.push(res[i]);
+      }
+      console.table(empArr);
+      firstQ();
+    });
+}   
 // Function to select which employee whose role we will be modifying
-
-
-
-
-
-
-
+function modifyRoleEmplSel() {
+  db.connection.query("SELECT id, first_name, last_name FROM employee", function(err, res) {
+    if (err) throw err;
+    inquirer.prompt([
+      {
+      type: "list",
+      message: "Which employee will you be changing?",
+      name: "modifyRoleChangedE",
+      choices: function(){
+        const choiceArrayEmpl = []
+        for (let i = 0; i<res.length; i++) {
+            choiceArrayEmpl.push(`${res[i].id} | ${res[i].first_name} ${res[i].last_name}`);
+        }
+        return choiceArrayEmpl
+      }
+      },
+    ]).then(function(empl){
+      const changingEmpl = parseInt(empl.modifyRoleChangedE.slice(0,5));
+      modifyRoleRoleSel(changingEmpl)
+    })
+  })
+}
 // Function to select which role we will be changing the employee to
 
 
