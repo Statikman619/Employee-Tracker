@@ -249,24 +249,27 @@ function getMgr(){
 function viewDept(){
   db.query("SELECT * FROM department", function(err,res){
     if (err) throw err;
-    console.table(res)
-    firstQ()
+    const deptArr = []
+      for (var i = 0; i < res.length; i++) {
+        deptArr.push(res[i])
+  })
+    console.table(res);
+    firstQ();
+}
+// Function to view all roles
+function viewRole(){
+  db.query("SELECT * FROM role", function(err, res){
+    if (err) throw err;
+      const roleArr = []
+      for (var i = 0; i < res.length; i++) {
+        roleArr.push(res[i])      
+      }
+      console.table(roleArr);
+      firstQ();
+    });
+}   
   })
 }
-
-
-
-
-
-
-// Function to view all roles
-
-
-
-
-
-
-
 // Function to view all employees
 
 
