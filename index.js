@@ -395,13 +395,21 @@ function modifyMgrMgrSel(empl) {
   })
 }
 // Function that appears at the end of each operation, to redirect to the beginning prompt if the user want to perform another action
-
-
-
-
-
-
-
-
-
+function continueOption() {
+  inquirer.prompt([
+      {
+      type:"list",
+      message:"Would you like to perform another action?",
+      name: "loopAnswer",
+      choices: ["yes", "no"]
+      }
+    ]).then(function(answer){
+        if (answer.loopAnswer === "yes") {
+            firstQ()
+        } else {
+            console.log("all finished!")
+            db.connection.end()
+        }
+    })
+}
 exports.firstQ = firstQ
