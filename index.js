@@ -359,13 +359,41 @@ function modifyMgrEmplSel() {
   })
 }
 // Function to select and assign the correct manager to the aforementioned employee
+function modifyMgrMgrSel(empl) {
+  const employee = empl
+  db.query("SELECT id, first_name, last_name FROM employee WHERE is_manager = 1", function (err, res) {
+    inquirer.prompt([
+      {
+      type: "list",
+      message: "And who will be their new leader?",
+      name: "modifyMgrChangedM",
+      choices: function(){
+        const choiceArrayMgr = []
+        for (let i = 0; i<res.length; i++) {
+            choiceArrayMgr.push(`${res[i].id} | ${res[i].first_name} ${res[i].last_name}`);
+        }
+        return choiceArrayMgr
+      }
+      },
+    ]).then(function(people) {
+      const mgr = parseInt(people.modifyMgrChangedM.slice(0,5));
+      const changingEmpl = employee
 
-
-
-
-
-
-
+      if (mgr === changingEmpl) {
+        console.log(`Looks like you have the same manager and employee id.  Please try again.`)
+        modifyMgrEmplSel()
+      } else {
+        db.query("UPDATE employee SET manager_id = ? WHERE id = ?", [mgr, changingEmpl], function(err, res){
+          if (err) {
+          } else {
+            console.log(`All set, thanks!`)
+            firstQ();
+          }
+        })
+      }
+    })
+  })
+}
 // Function that appears at the end of each operation, to redirect to the beginning prompt if the user want to perform another action
 
 
