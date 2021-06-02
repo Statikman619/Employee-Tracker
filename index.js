@@ -284,7 +284,7 @@ function viewEmployee() {
 }   
 // Function to select which employee whose role we will be modifying
 function modifyRoleEmplSel() {
-  db.connection.query("SELECT id, first_name, last_name FROM employee", function(err, res) {
+  db.query("SELECT id, first_name, last_name FROM employee", function(err, res) {
     if (err) throw err;
     inquirer.prompt([
       {
@@ -306,12 +306,35 @@ function modifyRoleEmplSel() {
   })
 }
 // Function to select which role we will be changing the employee to
-
-
-
-
-
-
+function modifyRoleRoleSel(empl) {
+  const employee = empl
+  db.query("SELECT id, title FROM role", function (err, res) {
+    inquirer.prompt([
+      {
+      type: "list",
+      message: "And what will be their new role be?",
+      name: "modifyRoleChangedR",
+      choices: function(){
+        const choiceArrayRole = []
+        for (let i = 0; i<res.length; i++) {
+            choiceArrayRole.push(`${res[i].id} | ${res[i].title}`);
+        }
+        return choiceArrayRole
+      }
+      },
+    ]).then(function(role) {
+      const newRole = parseInt(role.modifyRoleChangedR.slice(0,5));
+      const changingEmpl = role.employee
+      let query = db.query("UPDATE employee SET role_id = ? WHERE id = ?", [newRole, employee], function(err, res){
+        if (err) {
+        } else {
+          console.log("All set!")
+          firstQ();
+        }
+      })
+    })
+  })
+}
 // Function to select which employee whose manager we will be modifying
 
 
