@@ -299,9 +299,7 @@ function getMgr() {
       });
   });
 }
-// Function that physically adds the manager_id attribute into the employee entry, where appropraite
-// function addMgr(manager, employee){
-// }
+
 // Function to view all departments
 function viewDept() {
   db.query("SELECT * FROM department", function (err, res) {
