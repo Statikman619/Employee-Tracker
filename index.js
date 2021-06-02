@@ -336,14 +336,28 @@ function modifyRoleRoleSel(empl) {
   })
 }
 // Function to select which employee whose manager we will be modifying
-
-
-
-
-
-
-
-
+function modifyMgrEmplSel() {
+  db.query("SELECT id, first_name, last_name FROM employee", function(err, res) {
+    if (err) throw err;
+    inquirer.prompt([
+      {
+      type: "list",
+      message: "Which employee will you be modifying?",
+      name: "modifyMgrChangedE",
+      choices: function(){
+        const choiceArrayEmpl = []
+        for (let i = 0; i<res.length; i++) {
+            choiceArrayEmpl.push(`${res[i].id} | ${res[i].first_name} ${res[i].last_name}`);
+        }
+        return choiceArrayEmpl
+      }
+      },
+    ]).then(function(empl){
+      const changingEmpl = parseInt(empl.modifyMgrChangedE.slice(0,5));
+      modifyMgrMgrSel(changingEmpl)
+    })
+  })
+}
 // Function to select and assign the correct manager to the aforementioned employee
 
 
