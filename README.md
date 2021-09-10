@@ -16,11 +16,12 @@ VideoLink https://drive.google.com/file/d/1PSLNWvQEgDdQZ1leMvExRpd5QY-BK6by/view
 
 ## Description
 I want to be able to view and manage the departments, roles, and employees in my company
-So that I can organize and plan my business.
+So that I can organize and plan my business. You can browse through all the different rolesin the organization.
 ## Installation 
-in the command line run "npm install -y" "npm i inquirer" "npm i express" "npm i console.table" "npm i mysql".
+Clone this repository to receive all my files. Once you have my code make sure you are in the correct file directory.
+in the command line run "npm install" in the terminal to download all the needed dependencies.
 ## Usage 
-Follow the promts and add your desired employee information to add to your database.
+Follow the promts and add your desired employee information to add to your database. Once you're done you will have your own organiztion
 ## License MIT
 ## Contributors
 Mike with the help of Herm and Elma during office hours and my awesome tutor Andrew.
